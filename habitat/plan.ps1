@@ -12,7 +12,7 @@ $pkg_bin_dirs=@(
 )
 $pkg_deps=@(
   "core/cacerts"
-  "chef/ruby30-plus-devkit"
+  "chef/ruby31-plus-devkit"
   "chef/chef-powershell-shim"
 )
 
@@ -42,8 +42,18 @@ function Invoke-Download() {
     # source is in this repo, so we're going to create an archive from the
     # appropriate path within the repo and place the generated tarball in the
     # location expected by do_unpack
+        Write-BuildLine " ** Where the hell is 'Git'?"
+        $source_path = Get-ChildItem -path "C:\" -File "git.exe" -Recurse -ErrorAction SilentlyContinue
+        Write-BuildLine "I think I found Git here : "
+        foreach($source in $source_path){
+            Write-BuildLine $source
+        }
+        # $end_path = (Get-Item $source_path.DirectoryName).Parent.FullName
+        # $bin_path = (Get-Item $source_path.DirectoryName).FullName
+        # Write-Buildline "Git is located here : " $bin_path
     try {
         Push-Location (Resolve-Path "$PLAN_CONTEXT/../").Path
+        # $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
         git archive --format=zip --output="${HAB_CACHE_SRC_PATH}/${pkg_filename}" HEAD
         if (-not $?) { throw "unable to create archive of source" }
     } finally {
@@ -60,7 +70,17 @@ function Invoke-Prepare {
     $env:GEM_HOME = "$pkg_prefix/vendor"
 
     try {
+        Write-BuildLine " ** Where the hell is 'Gem'?"
+        $source_path = Get-ChildItem -path "C:\hab\studios" -File "gem.cmd" -Recurse -ErrorAction SilentlyContinue
+        $end_path = (Get-Item $source_path.DirectoryName).Parent.FullName
+        $bin_path = (Get-Item $source_path.DirectoryName).FullName
+
+
         Push-Location "${HAB_CACHE_SRC_PATH}/${pkg_dirname}"
+        Write-BuildLine " ** Updating the Path and Installing Bundler"
+        # $env:Path += [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
+
+        [System.Diagnostics.Process]::Start("$bin_path\\gem", "install bundler:2.3.17")
 
         Write-BuildLine " ** Configuring bundler for this build environment"
         bundle config --local without server docgen maintenance pry travis integration ci chefstyle

@@ -68,10 +68,10 @@ if windows?
   dependency "ruby-windows-devkit-bash"
 end
 
-dependency "ruby-cleanup"
+# dependency "ruby-cleanup"
 
 # further gem cleanup other projects might not yet want to use
-dependency "more-ruby-cleanup"
+# dependency "more-ruby-cleanup"
 
 package :rpm do
   signing_passphrase ENV["OMNIBUS_RPM_SIGNING_PASSPHRASE"]
