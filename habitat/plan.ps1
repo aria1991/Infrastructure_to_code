@@ -45,7 +45,7 @@ function Invoke-Download() {
     $git_path += "c:\\Program Files\\Git\\bin"
     try {
         Push-Location (Resolve-Path "$PLAN_CONTEXT/../").Path
-        [System.Diagnostics.Process]::Start("$git_path\\git", "archive --format=zip --output='${HAB_CACHE_SRC_PATH}/${pkg_filename}' HEAD")
+        [System.Diagnostics.Process]::Start("$git_path\\git", "archive --format=zip --output=${HAB_CACHE_SRC_PATH}\\${pkg_filename} HEAD")
         if (-not $?) { throw "unable to create archive of source" }
     } finally {
         Pop-Location
