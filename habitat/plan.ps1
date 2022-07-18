@@ -42,20 +42,10 @@ function Invoke-Download() {
     # source is in this repo, so we're going to create an archive from the
     # appropriate path within the repo and place the generated tarball in the
     # location expected by do_unpack
-    $env:Path += "c:\\Program Files\\Git\\bin"
-        # Write-BuildLine " ** Where the hell is 'Git'?"
-        # $source_path = Get-ChildItem -path "C:\" -File "git.exe" -Recurse -ErrorAction SilentlyContinue
-        # Write-BuildLine "I think I found Git here : "
-        # foreach($source in $source_path){
-        #     Write-BuildLine $source
-        # }
-        # $end_path = (Get-Item $source_path.DirectoryName).Parent.FullName
-        # $bin_path = (Get-Item $source_path.DirectoryName).FullName
-        # Write-Buildline "Git is located here : " $bin_path
+    $git_path += "c:\\Program Files\\Git\\bin"
     try {
         Push-Location (Resolve-Path "$PLAN_CONTEXT/../").Path
-        # $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
-        git archive --format=zip --output="${HAB_CACHE_SRC_PATH}/${pkg_filename}" HEAD
+        [System.Diagnostics.Process]::Start("$git_path\\git", "archive --format=zip --output='${HAB_CACHE_SRC_PATH}/${pkg_filename}' HEAD")
         if (-not $?) { throw "unable to create archive of source" }
     } finally {
         Pop-Location
@@ -76,10 +66,8 @@ function Invoke-Prepare {
         $end_path = (Get-Item $source_path.DirectoryName).Parent.FullName
         $bin_path = (Get-Item $source_path.DirectoryName).FullName
 
-
         Push-Location "${HAB_CACHE_SRC_PATH}/${pkg_dirname}"
         Write-BuildLine " ** Updating the Path and Installing Bundler"
-        # $env:Path += [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
 
         [System.Diagnostics.Process]::Start("$bin_path\\gem", "install bundler:2.3.17")
 
