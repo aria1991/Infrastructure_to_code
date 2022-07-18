@@ -64,21 +64,20 @@ function Invoke-Prepare {
 
     try {
         Write-BuildLine " ** Where the hell is 'Gem'?"
-        $gems = Get-ChildItem -path . -File "gem.bat"
-        Write-BuildLine "*** Send in the Gems!"
-        Write-BuildLine $gems
-        # foreach($gem in $gems){
-        #     $gem.FullName
-        # }
-        $source_path = Get-ChildItem -path "C:\hab\studios" -File "gem.cmd" -Recurse -ErrorAction SilentlyContinue
-        $end_path = (Get-Item $source_path.DirectoryName).Parent.FullName
-        $bin_path = (Get-Item $source_path.DirectoryName).FullName
+        $gem_file = @"
+@ECHO OFF
+@"%~dp0ruby.exe" "%~dpn0" %*
+"@
+        $gem_file | Set-Content "$PWD\\gem.bat"
+        # $source_path = Get-ChildItem -path "C:\hab\studios" -File "gem.cmd" -Recurse -ErrorAction SilentlyContinue
+        # $end_path = (Get-Item $source_path.DirectoryName).Parent.FullName
+        # $bin_path = (Get-Item $source_path.DirectoryName).FullName
 
-        Push-Location "${HAB_CACHE_SRC_PATH}/${pkg_dirname}"
-        Write-BuildLine " ** Updating the Path and Installing Bundler"
+        # Push-Location "${HAB_CACHE_SRC_PATH}/${pkg_dirname}"
+        # Write-BuildLine " ** Updating the Path and Installing Bundler"
 
-        [System.Diagnostics.Process]::Start("$bin_path\\gem", "install bundler")
-
+        # [System.Diagnostics.Process]::Start("$bin_path\\gem", "install bundler")
+        gem install bundler:2.3.17
         Write-BuildLine " ** Configuring bundler for this build environment"
         bundle config --local without server docgen maintenance pry travis integration ci chefstyle
         if (-not $?) { throw "unable to configure bundler to restrict gems to be installed" }
