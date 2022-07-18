@@ -42,12 +42,13 @@ function Invoke-Download() {
     # source is in this repo, so we're going to create an archive from the
     # appropriate path within the repo and place the generated tarball in the
     # location expected by do_unpack
-        Write-BuildLine " ** Where the hell is 'Git'?"
-        $source_path = Get-ChildItem -path "C:\" -File "git.exe" -Recurse -ErrorAction SilentlyContinue
-        Write-BuildLine "I think I found Git here : "
-        foreach($source in $source_path){
-            Write-BuildLine $source
-        }
+    $env:Path += "c:\\Program Files\\Git\\bin"
+        # Write-BuildLine " ** Where the hell is 'Git'?"
+        # $source_path = Get-ChildItem -path "C:\" -File "git.exe" -Recurse -ErrorAction SilentlyContinue
+        # Write-BuildLine "I think I found Git here : "
+        # foreach($source in $source_path){
+        #     Write-BuildLine $source
+        # }
         # $end_path = (Get-Item $source_path.DirectoryName).Parent.FullName
         # $bin_path = (Get-Item $source_path.DirectoryName).FullName
         # Write-Buildline "Git is located here : " $bin_path
