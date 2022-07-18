@@ -77,6 +77,7 @@ function Invoke-Prepare {
         # Write-BuildLine " ** Updating the Path and Installing Bundler"
 
         # [System.Diagnostics.Process]::Start("$bin_path\\gem", "install bundler")
+        $env:Path += ";c:\\Program Files\\Git\\bin"
         gem install bundler:2.3.17
         Write-BuildLine " ** Configuring bundler for this build environment"
         bundle config --local without server docgen maintenance pry travis integration ci chefstyle
