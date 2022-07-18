@@ -66,9 +66,10 @@ function Invoke-Prepare {
         Write-BuildLine " ** Where the hell is 'Gem'?"
         $gems = Get-ChildItem -path . -File "gem.bat"
         Write-BuildLine "*** Send in the Gems!"
-        foreach($gem in $gems){
-            $gem.FullName
-        }
+        Write-BuildLine $gems
+        # foreach($gem in $gems){
+        #     $gem.FullName
+        # }
         $source_path = Get-ChildItem -path "C:\hab\studios" -File "gem.cmd" -Recurse -ErrorAction SilentlyContinue
         $end_path = (Get-Item $source_path.DirectoryName).Parent.FullName
         $bin_path = (Get-Item $source_path.DirectoryName).FullName
